@@ -1,8 +1,7 @@
-let restaurants,
-  neighborhoods,
-  cuisines
-var map
-var markers = []
+// import DBHelper from './dbhelper';
+let restaurants, neighborhoods, cuisines, map;
+self.markers = [];
+
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
@@ -137,11 +136,11 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
-
-  const image = document.createElement('img');
-  image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  li.append(image);
+  const imgSource = DBHelper.imageUrlForRestaurant(restaurant);
+  const imageContainer = document.createElement('div');
+  imageContainer.className = 'restaurant-img';
+  imageContainer.style.backgroundImage = `url(${imgSource})`;
+  li.append(imageContainer);
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
