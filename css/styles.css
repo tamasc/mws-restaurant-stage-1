@@ -207,15 +207,6 @@ nav h1 a {
   min-width: 270px;
   flex: 0 1 360px;
 }
-/*
-#restaurants-list #restaurant-img {
-#restaurants-list #restaurant-img {
-  background-color: #ccc;
-  display: block;
-  margin: 0;
-  max-width: 100%;
-  min-height: 248px;
-} */
 
 .restaurant-img {
   width: 100%;
@@ -223,10 +214,9 @@ nav h1 a {
 }
 
 #restaurants-list li .restaurant-img {
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  height: calc(100% - 160px);
+  background-color: #ccc;
+  width: 100%;
+  height: auto;
 }
 
 #restaurants-list li h1 {
