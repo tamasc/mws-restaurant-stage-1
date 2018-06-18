@@ -16,7 +16,7 @@ const STATIC_ASSETS = [
   '/img/7.jpg',
   '/img/8.jpg',
   '/img/9.jpg',
-  '/img/10.jpg',
+  '/img/10.jpg'
 ];
 
 self.addEventListener('install', event => {
@@ -24,7 +24,9 @@ self.addEventListener('install', event => {
     caches
       .open(CACHE)
       .then(cache => cache.addAll(STATIC_ASSETS))
-      .catch(err => console.warn('Static assets cannot be added to cache: ', err))
+      .catch(err =>
+        console.warn('Static assets cannot be added to cache: ', err)
+      )
       .then(self.skipWaiting())
   );
 });
@@ -33,11 +35,16 @@ self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
       return Promise.all(
-        cacheNames.filter(function(cacheName) {
-          return cacheName.startsWith('mws-restaurant-') && !allCaches.includes(cacheName);
-        }).map(function(cacheName) {
-          return caches.delete(cacheName);
-        })
+        cacheNames
+          .filter(function(cacheName) {
+            return (
+              cacheName.startsWith('mws-restaurant-') &&
+              !allCaches.includes(cacheName)
+            );
+          })
+          .map(function(cacheName) {
+            return caches.delete(cacheName);
+          })
       );
     })
   );
@@ -45,13 +52,15 @@ self.addEventListener('activate', function(event) {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches
-      .match(event.request, { ignoreSearch: true })
-      .then(response => {
-        // console.log(response);
-        return !!response ? response :
-          fetch(event.request)
-          .catch(err => console.warn('Fetching has fas failed: ', err));
-      })
+    caches.match(event.request, { ignoreSearch: true }).then(response => {
+      return !!response
+        ? response
+        : fetch(event.request)
+            .then(resp => {
+              cache.put(storageUrl, resp.clone());
+              return resp;
+            })
+            .catch(err => console.warn('Fetching has fas failed: ', err));
+    })
   );
 });
