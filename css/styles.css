@@ -70,8 +70,7 @@ section {
   display: block;
 }
 
-#maincontent {
-  /* margin-top: 112px; */
+#maincontent, #restaurant-maincontent {
   background-color: #f3f3f3;
   min-height: 100%;
 }
@@ -378,7 +377,7 @@ nav h1 a {
     width: calc(100% - 80px);
   }
 
-  #maincontent {
+  #restaurant-maincontent {
     margin-top: 112px;
   }
 
