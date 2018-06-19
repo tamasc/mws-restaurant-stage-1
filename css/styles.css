@@ -85,7 +85,7 @@ section {
   text-transform: uppercase;
 }
 /* ====================== Navigation ====================== */
-nav {
+.heading-container {
   box-sizing: border-box;
   width: 100%;
   padding: 15px;
@@ -94,11 +94,11 @@ nav {
   text-align:center;
 }
 
-nav h1 {
+.heading-container h1 {
   margin: auto;
 }
 
-nav h1 a {
+.heading-container h1 a {
   color: #fff;
   font-size: 14pt;
   font-weight: 200;
@@ -254,7 +254,7 @@ nav h1 a {
   z-index: 5;
 }
 
-.inside header nav {
+.inside header .heading-container {
   padding: 15px;
 }
 
@@ -336,7 +336,7 @@ nav h1 a {
 
 #reviews-list li {
   background-color: #fff;
-    border: 2px solid #f3f3f3;
+  border: 2px solid #f3f3f3;
   display: block;
   list-style-type: none;
   margin: 0 0 30px;
@@ -385,4 +385,8 @@ nav h1 a {
   .inside #footer {
     width: 100%;
   }
+}
+
+@media screen and (max-width: 720px) {
+
 }
