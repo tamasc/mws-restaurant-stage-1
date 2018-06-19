@@ -35,7 +35,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches
       .keys()
-      .then(cacheName =>
+      .then(cacheNames =>
         Promise.all(
           cacheNames
             .filter(cacheName => cacheName.startsWith('mws-restaurant-'))
@@ -52,7 +52,7 @@ self.addEventListener('fetch', event => {
         ? response
         : fetch(event.request)
             .then(resp => {
-              caches.open(CACHE).then(cache.put(storageUrl, resp.clone()));
+              caches.open(CACHE).then(cache => cache.put(storageUrl, resp.clone()));
               return resp;
             })
             .catch(err => console.warn('Fetching has fas failed: ', err));
