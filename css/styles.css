@@ -96,6 +96,7 @@ section {
 
 .heading-container h1 {
   margin: auto;
+  line-height: 1;
 }
 
 .heading-container h1 a {
@@ -387,6 +388,8 @@ section {
   }
 }
 
-@media screen and (max-width: 720px) {
-
+@media screen and (max-width: 442px) {
+  .heading-container {
+    height: 90px;
+  }
 }
