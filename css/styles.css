@@ -342,13 +342,18 @@ section {
   list-style-type: none;
   margin: 0 0 30px;
   overflow: hidden;
-  padding: 0 20px 20px;
+  padding: 20px 20px;
   position: relative;
   width: 85%;
 }
 
 #reviews-list li p {
   margin: 0 0 10px;
+}
+
+#reviews-list li p:first-of-type {
+  font-weight: bold;
+  color: #f58500;
 }
 
 #restaurant-hours td {
