@@ -31,22 +31,17 @@ self.addEventListener('install', event => {
   );
 });
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames
-          .filter(function(cacheName) {
-            return (
-              cacheName.startsWith('mws-restaurant-') &&
-              !allCaches.includes(cacheName)
-            );
-          })
-          .map(function(cacheName) {
-            return caches.delete(cacheName);
-          })
-      );
-    })
+    caches
+      .keys()
+      .then(cacheName =>
+        Promise.all(
+          cacheNames
+            .filter(cacheName => cacheName.startsWith('mws-restaurant-'))
+            .map(cacheName => caches.delete(cacheName))
+        )
+      )
   );
 });
 
@@ -57,7 +52,7 @@ self.addEventListener('fetch', event => {
         ? response
         : fetch(event.request)
             .then(resp => {
-              cache.put(storageUrl, resp.clone());
+              caches.open(CACHE).then(cache.put(storageUrl, resp.clone()));
               return resp;
             })
             .catch(err => console.warn('Fetching has fas failed: ', err));
