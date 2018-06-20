@@ -52,7 +52,7 @@ self.addEventListener('fetch', event => {
         ? response
         : fetch(event.request)
             .then(resp => {
-              caches.open(CACHE).then(cache => cache.put(storageUrl, resp.clone()));
+              caches.open(CACHE).then(cache => cache.put(event.request.url, resp.clone()));
               return resp;
             })
             .catch(err => console.warn('Fetching has fas failed: ', err));
