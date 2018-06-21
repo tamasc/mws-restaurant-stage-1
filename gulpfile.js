@@ -73,7 +73,7 @@ function scripts() {
                 presets: ['env']
             })
         )
-        .pipe(concat('all.js'))
+        // .pipe(concat('all.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('dist/js'));
 }
@@ -87,7 +87,7 @@ function scriptsDist() {
                 presets: ['env']
             })
         )
-        .pipe(concat('all.js'))
+        // .pipe(concat('all.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(uglify())
         .pipe(gulp.dest('dist/js'));
