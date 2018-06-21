@@ -14,7 +14,7 @@ const browserSync = require('browser-sync').create();
 // Gulp tasks
 gulp.task(
     'default',
-    ['copy-html', 'copy-images', 'scripts', 'service-worker', 'styles', 'copy-data'],
+    ['copy-html', 'copy-images', 'scripts', 'service-worker', 'styles'],
     defaultTask
 );
 gulp.task(
@@ -29,7 +29,6 @@ gulp.task('service-worker', serviceWorker);
 gulp.task('scripts', scripts);
 gulp.task('scripts-dist', scriptsDist);
 gulp.task('clean', cleanDist);
-gulp.task('copy-data', copyData);
 
 // Functions for tasks
 function defaultTask() {
@@ -99,8 +98,4 @@ function serviceWorker() {
 
 function cleanDist() {
     return gulp.src('dist', { read: false }).pipe(clean());
-}
-
-function copyData() {
-	return gulp.src('data/**/*.*').pipe(gulp.dest('dist/data'));
 }
