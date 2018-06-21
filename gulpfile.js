@@ -14,12 +14,12 @@ const browserSync = require('browser-sync').create();
 // Gulp tasks
 gulp.task(
     'default',
-    ['copy-html', 'copy-images', 'scripts', 'service-worker'],
+    ['copy-html', 'copy-images', 'scripts', 'service-worker', 'styles', 'copy-data'],
     defaultTask
 );
 gulp.task(
     'dist',
-    ['copy-html', 'copy-images', 'scripts-dist', 'service-worker'],
+    ['copy-html', 'copy-images', 'scripts-dist', 'service-worker', 'styles'],
     defaultTask
 );
 gulp.task('styles', sassConverter);
@@ -29,6 +29,7 @@ gulp.task('service-worker', serviceWorker);
 gulp.task('scripts', scripts);
 gulp.task('scripts-dist', scriptsDist);
 gulp.task('clean', cleanDist);
+gulp.task('copy-data', copyData);
 
 // Functions for tasks
 function defaultTask() {
@@ -40,6 +41,7 @@ function defaultTask() {
     gulp.watch('sass/**/*.scss', ['styles']);
     gulp.watch(['*/html'], ['copy-html']);
     gulp.watch(['sw.js'], ['service-worker']);
+    gulp.watch(['js/**/*.js'], ['scripts']);
 }
 
 function copyHtml() {
@@ -97,4 +99,8 @@ function serviceWorker() {
 
 function cleanDist() {
     return gulp.src('dist', { read: false }).pipe(clean());
+}
+
+function copyData() {
+	return gulp.src('data/**/*.*').pipe(gulp.dest('dist/data'));
 }
