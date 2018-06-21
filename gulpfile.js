@@ -38,7 +38,7 @@ function defaultTask() {
     });
     browserSync.stream();
     gulp.watch('sass/**/*.scss', ['styles']);
-    gulp.watch(['*/html'], ['copy-html']);
+    gulp.watch(['*.html'], ['copy-html']);
     gulp.watch(['sw.js'], ['service-worker']);
     gulp.watch(['js/**/*.js'], ['scripts']);
 }
