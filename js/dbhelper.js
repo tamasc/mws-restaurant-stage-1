@@ -164,7 +164,7 @@ class DBHelper {
     static imageUrlForRestaurant(restaurant) {
         let image = `${restaurant.photograph}.jpg`;
         if (!restaurant.photograph) {
-          image = 'thumbnail.png';
+          image = 'placeholder.png';
         }
         return `/img/${image}`;
     }

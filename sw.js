@@ -16,7 +16,8 @@ const STATIC_ASSETS = [
   '/img/7.jpg',
   '/img/8.jpg',
   '/img/9.jpg',
-  '/img/10.jpg'
+  '/img/10.jpg',
+  '/img/placeholder.png'
 ];
 
 self.addEventListener('install', event => {
@@ -48,11 +49,14 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request, { ignoreSearch: true }).then(response => {
+      console.log(match)
       return !!response
         ? response
         : fetch(event.request)
             .then(resp => {
-              caches.open(CACHE).then(cache => cache.put(event.request.url, resp.clone()));
+              caches.open(CACHE)
+                .then(cache => cache.put(event.request.url, resp.clone()))
+                .catch(error => `Failed to save request`);
               return resp;
             })
             .catch(err => console.warn('Fetching has fas failed: ', err));
