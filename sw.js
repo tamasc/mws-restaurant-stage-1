@@ -6,7 +6,6 @@ const STATIC_ASSETS = [
   '/js/main.js',
   '/js/restaurant_info.js',
   '/restaurant.html',
-  '/data/restaurants.json',
   '/img/1.jpg',
   '/img/2.jpg',
   '/img/3.jpg',
@@ -39,7 +38,9 @@ self.addEventListener('activate', event => {
       .then(cacheNames =>
         Promise.all(
           cacheNames
-            .filter(cacheName => cacheName.startsWith('mws-restaurant-'))
+            .filter(cacheName => (
+              cacheName.startsWith('mws-restaurant-') && CACHE !== cacheName
+            ))
             .map(cacheName => caches.delete(cacheName))
         )
       )
@@ -49,7 +50,6 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request, { ignoreSearch: true }).then(response => {
-      console.log(match)
       return !!response
         ? response
         : fetch(event.request)
