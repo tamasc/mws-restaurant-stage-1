@@ -16,9 +16,7 @@
     "url": "https://github.com/tamasc/mws-restaurant-stage-1/issues"
   },
   "homepage": "https://github.com/tamasc/mws-restaurant-stage-1#readme",
-  "dependencies": {
-    "idb": "^2.1.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",

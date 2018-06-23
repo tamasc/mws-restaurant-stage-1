@@ -18,12 +18,12 @@ const browserSync = require('browser-sync').create();
 // Gulp tasks
 gulp.task(
     'default',
-    ['copy-html', 'copy-images', 'scripts', 'service-worker', 'styles'],
+    ['copy-html', 'copy-images', 'scripts', 'service-worker', 'styles', 'idb'],
     defaultTask
 );
 gulp.task(
     'dist',
-    ['copy-html', 'copy-images', 'scripts-dist', 'service-worker', 'styles'],
+    ['copy-html', 'copy-images', 'scripts-dist', 'service-worker', 'styles', 'idb'],
     defaultTask
 );
 gulp.task('styles', sassConverter);
@@ -33,6 +33,7 @@ gulp.task('service-worker', serviceWorker);
 gulp.task('scripts', scripts);
 gulp.task('scripts-dist', scriptsDist);
 gulp.task('clean', cleanDist);
+gulp.task('idb', copyIdb);
 
 // Functions for tasks
 function defaultTask() {
@@ -71,7 +72,7 @@ function sassConverter() {
 
 function scripts() {
     return gulp
-        .src('js/**/*.js')
+        .src(['js/**/*.js', '!js/idb.js'])
         .pipe(sourcemaps.init())
         .pipe(
             babel({
@@ -129,4 +130,22 @@ function serviceWorker() {
 
 function cleanDist() {
     return gulp.src('dist', { read: false }).pipe(clean());
+}
+
+function copyIdb() {
+    return gulp.src('js/idb.js')
+        .pipe(
+            babel({
+                presets: [
+                    ['env',
+                        {
+                            'targets': {
+                                'browsers': ['last 2 versions', 'safari >= 7']
+                            },
+                        }]
+                ]
+            })
+        )
+        .pipe(uglify())
+        .pipe(gulp.dest('dist/js'));
 }
