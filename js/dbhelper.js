@@ -1,7 +1,39 @@
+// TODO: fix ipmorting from node_modules
+// import idb from 'idb';
+
+const idbPromiseSymbol = Symbol('idbPromise');
 /**
  * Common database helper functions.
  */
 class DBHelper {
+    /**
+     * IndexedDB promise.
+     * Declared after the class definition as a static property.
+     */
+    static get idbPromise() {
+        return DBHelper[idbPromiseSymbol];
+    }
+
+    /**
+     * Store restaurant or array of restaurants in IndexedDB.
+     */
+    static storeRestaurants(restaurants) {
+        DBHelper.idbPromise.then(db => {
+            const tx = db.transaction('restarurantListStore', 'readwrite');
+            const store = tx.objectStore('restarurantListStore');
+            if (Array.isArray(restaurants)) {
+                return Promise.all(restaurants.map(restaurant => store.put(restaurant)))
+                    .then(e => tx.complete)
+                    .catch(error => console.warn('Error has occured while storing the restaurants in DB', error))
+            }
+            return store.put(restaurant)
+                .then(e => tx.complete)
+                .catch(error => console.warn(
+                    `Error has occured while storing the ${restaurant.name || ''} restaurant in DB`, error)
+                )
+        });
+    }
+
     /**
      * Database URL.
      * Change this to restaurants.json file location on your server.
@@ -18,6 +50,7 @@ class DBHelper {
         fetch(`${DBHelper.DATABASE_URL}`)
             .then(response => response.json())
             .then(restaurants => {
+                DBHelper.storeRestaurants(restaurants);
                 callback(null, restaurants);
             })
             .catch(error => {
@@ -34,6 +67,7 @@ class DBHelper {
             .then(response => response.json())
             .then(restaurant => {
                 if (restaurant) {
+                    DBHelper.storeRestaurants(restaurant);
                     callback(null, restaurant);
                     return;
                 }
@@ -164,7 +198,7 @@ class DBHelper {
     static imageUrlForRestaurant(restaurant) {
         let image = `${restaurant.photograph}.jpg`;
         if (!restaurant.photograph) {
-          image = 'placeholder.png';
+            image = 'placeholder.png';
         }
         return `/img/${image}`;
     }
@@ -183,3 +217,7 @@ class DBHelper {
         return marker;
     }
 }
+
+DBHelper[idbPromiseSymbol] = idb.open('restaurants', 1, upgradeDB => {
+    const restaruantListStore = upgradeDB.createObjectStore('restarurantListStore', { keyPath: 'name' });
+});
