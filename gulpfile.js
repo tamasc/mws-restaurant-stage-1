@@ -34,7 +34,7 @@ gulp.task('clean', cleanDist);
 function defaultTask() {
     browserSync.init({
         server: './dist',
-        port: 8000
+        port: 8001
     });
     browserSync.stream();
     gulp.watch('sass/**/*.scss', ['styles']);
@@ -69,7 +69,20 @@ function scripts() {
         .pipe(sourcemaps.init())
         .pipe(
             babel({
-                presets: ['env']
+                presets: [
+                    ['env',
+                        {
+                            'targets': {
+                                'browsers': ['last 2 versions', 'safari >= 7']
+                            },
+                        }
+                    ]
+                ],
+                // plugins: [
+                //     ['transform-es2015-modules-commonjs', {
+                //         'allowTopLevelThis': true
+                //     }]
+                // ]
             })
         )
         // .pipe(concat('all.js'))
@@ -80,10 +93,22 @@ function scripts() {
 function scriptsDist() {
     return gulp
         .src('js/**/*.js')
-		.pipe(sourcemaps.init())
+        .pipe(sourcemaps.init())
         .pipe(
             babel({
-                presets: ['env']
+                presets: [
+                    ['env',
+                        {
+                            'targets': {
+                                'browsers': ['last 2 versions', 'safari >= 7']
+                            },
+                        }]
+                ],
+                // plugins: [
+                //     ['transform-es2015-modules-commonjs', {
+                //         'allowTopLevelThis': true
+                //     }]
+                // ]
             })
         )
         // .pipe(concat('all.js'))
