@@ -1,3 +1,6 @@
+// Import config
+const config = require('./config.js');
+
 // Gulp imports
 const gulp = require('gulp');
 const sass = require('gulp-sass');
@@ -7,6 +10,7 @@ const uglify = require('gulp-uglify');
 const clean = require('gulp-clean');
 const sourcemaps = require('gulp-sourcemaps');
 const babel = require('gulp-babel');
+const replace = require('gulp-replace');
 
 // Browser sync import
 const browserSync = require('browser-sync').create();
@@ -44,7 +48,9 @@ function defaultTask() {
 }
 
 function copyHtml() {
-    return gulp.src('*.html').pipe(gulp.dest('dist'));
+    return gulp.src('*.html')
+        .pipe(replace('@@GOOGLE_MAPS_API_KEY', config.GOOGLE_MAPS_API_KEY))
+        .pipe(gulp.dest('dist'));
 }
 
 function copyImages() {
