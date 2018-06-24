@@ -18,18 +18,18 @@ const browserSync = require('browser-sync').create();
 // Gulp tasks
 gulp.task(
     'default',
-    ['copy-html', 'copy-images', 'scripts', 'service-worker', 'styles', 'idb'],
+    ['copy-html', 'copy-images', 'scripts', 'copy-from-root', 'styles', 'idb'],
     defaultTask
 );
 gulp.task(
     'dist',
-    ['copy-html', 'copy-images', 'scripts-dist', 'service-worker', 'styles', 'idb'],
+    ['copy-html', 'copy-images', 'scripts-dist', 'copy-from-root', 'styles', 'idb'],
     defaultTask
 );
 gulp.task('styles', sassConverter);
 gulp.task('copy-html', copyHtml);
 gulp.task('copy-images', copyImages);
-gulp.task('service-worker', serviceWorker);
+gulp.task('copy-from-root', copyFromRoot);
 gulp.task('scripts', scripts);
 gulp.task('scripts-dist', scriptsDist);
 gulp.task('clean', cleanDist);
@@ -124,8 +124,9 @@ function scriptsDist() {
         .pipe(gulp.dest('dist/js'));
 }
 
-function serviceWorker() {
-    return gulp.src('sw.js').pipe(gulp.dest('dist'));
+function copyFromRoot() {
+    // return gulp.src(['sw.js']).pipe(gulp.dest('dist'));
+    return gulp.src(['sw.js', 'manifest.webmanifest']).pipe(gulp.dest('dist'));
 }
 
 function cleanDist() {

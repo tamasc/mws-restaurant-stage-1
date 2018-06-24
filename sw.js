@@ -5,6 +5,7 @@ const STATIC_ASSETS = [
   '/js/dbhelper.js',
   '/js/main.js',
   '/js/restaurant_info.js',
+  '/js/idb.js',
   '/restaurant.html',
   '/img/1.jpg',
   '/img/2.jpg',
@@ -16,7 +17,10 @@ const STATIC_ASSETS = [
   '/img/8.jpg',
   '/img/9.jpg',
   '/img/10.jpg',
-  '/img/placeholder.png'
+  '/img/icon-restaurant-128.png',
+  '/img/icon-restaurant-512.png',
+  '/img/placeholder.png',
+  '/manifest.webmanifest'
 ];
 
 self.addEventListener('install', event => {
