@@ -35,6 +35,30 @@ class DBHelper {
     }
 
     /**
+     * Get restaurant or array of restaurants in IndexedDB.
+     */
+    static retrieveRestaurants(callback, id) {
+        return DBHelper.idbPromise.then(db => {
+            const tx = db.transaction('restarurantListStore', 'readwrite');
+            const store = tx.objectStore('restarurantListStore');
+            const promise = id ?  store.get(id) :  store.getAll();
+            return promise.then((data) => {
+                    if (Array.isArray(data) && data.length < 1) {
+                        tx.abort();
+                        throw new Error('No record found.')
+                    }
+                    callback(null, data);
+                    return tx.complete;
+                })
+                .catch(error => {
+                    callback(`Error has occured while retrieving data from DB: ${error}`, null)
+                    tx.abort();
+                    return Promise.reject();
+                })
+        });
+    }
+
+    /**
      * Database URL.
      * Change this to restaurants.json file location on your server.
      */
@@ -47,33 +71,39 @@ class DBHelper {
      * Fetch all restaurants.
      */
     static fetchRestaurants(callback) {
-        fetch(`${DBHelper.DATABASE_URL}`)
-            .then(response => response.json())
-            .then(restaurants => {
-                DBHelper.storeRestaurants(restaurants);
-                callback(null, restaurants);
-            })
+        DBHelper.retrieveRestaurants(callback)
             .catch(error => {
-                callback(`Request failed. Returned status of ${error}`, null);
+                fetch(`${DBHelper.DATABASE_URL}`)
+                    .then(response => response.json())
+                    .then(restaurants => {
+                        DBHelper.storeRestaurants(restaurants);
+                        callback(null, restaurants);
+                    })
+                    .catch(error => {
+                        callback(`Request failed. Returned status of ${error}`, null);
+                    });
             });
+
     }
 
     /**
      * Fetch a restaurant by its ID.
      */
     static fetchRestaurantById(id, callback) {
-        // fetch all restaurants with proper error handling.
-        fetch(`${DBHelper.DATABASE_URL}/${id}`)
-            .then(response => response.json())
-            .then(restaurant => {
-                if (restaurant) {
-                    DBHelper.storeRestaurants(restaurant);
-                    callback(null, restaurant);
-                    return;
-                }
-                callback('Restaurant does not exist', null);
-            })
-            .catch(error => callback(error, null));
+        DBHelper.retrieveRestaurants(callback)
+        .catch(error => {
+            fetch(`${DBHelper.DATABASE_URL}/${id}`)
+                .then(response => response.json())
+                .then(restaurant => {
+                    if (restaurant) {
+                        DBHelper.storeRestaurants(restaurant);
+                        callback(null, restaurant);
+                        return;
+                    }
+                    callback('Restaurant does not exist', null);
+                })
+                .catch(error => callback(error, null));
+        })
     }
 
     /**
