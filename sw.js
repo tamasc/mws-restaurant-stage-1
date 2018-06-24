@@ -20,6 +20,7 @@ const STATIC_ASSETS = [
   '/img/icon-restaurant-128.png',
   '/img/icon-restaurant-512.png',
   '/img/placeholder.png',
+  '/favicon.ico',
   '/manifest.webmanifest'
 ];
 

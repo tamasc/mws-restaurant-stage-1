@@ -39,7 +39,7 @@ gulp.task('idb', copyIdb);
 function defaultTask() {
     browserSync.init({
         server: './dist',
-        port: 8001
+        port: 8002
     });
     browserSync.stream();
     gulp.watch('sass/**/*.scss', ['styles']);
@@ -126,7 +126,7 @@ function scriptsDist() {
 
 function copyFromRoot() {
     // return gulp.src(['sw.js']).pipe(gulp.dest('dist'));
-    return gulp.src(['sw.js', 'manifest.webmanifest']).pipe(gulp.dest('dist'));
+    return gulp.src(['sw.js', 'manifest.webmanifest', 'favicon.ico']).pipe(gulp.dest('dist'));
 }
 
 function cleanDist() {
