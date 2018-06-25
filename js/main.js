@@ -5,6 +5,10 @@ if ('serviceWorker' in navigator) {
   .catch((err) => console.warn('Service worker cannot be registered due to: ', err));
 }
 
+// lazy load images
+const observer = lozad();
+observer.observe()
+
 // import DBHelper from './dbhelper';
 let restaurants, neighborhoods, cuisines, map;
 self.markers = [];
@@ -156,6 +160,7 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
+  observer.observe();
   addMarkersToMap();
 }
 
@@ -166,8 +171,8 @@ const createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
   const imgSource = DBHelper.imageUrlForRestaurant(restaurant);
   const image = document.createElement('img');
-  image.className = 'restaurant-img';
-  image.src = imgSource;
+  image.classList.add('restaurant-img', 'lozad');
+  image.setAttribute('data-src', imgSource);
   image.alt = `image of restaurant ${restaurant.name}`;
   li.append(image);
 
