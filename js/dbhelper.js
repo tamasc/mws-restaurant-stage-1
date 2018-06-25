@@ -41,9 +41,15 @@ class DBHelper {
         return DBHelper.idbPromise.then(db => {
             const tx = db.transaction('restarurantListStore', 'readwrite');
             const store = tx.objectStore('restarurantListStore');
-            const promise = id ?  store.get(id) :  store.getAll();
+            let promise;
+            if (id !== undefined) {
+                promise = store.get(Number(id))
+            } else {
+                promise = store.getAll();
+            }
+
             return promise.then((data) => {
-                    if (Array.isArray(data) && data.length < 1) {
+                    if (!data || (Array.isArray(data) && data.length < 1)) {
                         tx.abort();
                         throw new Error('No record found.')
                     }
@@ -90,7 +96,7 @@ class DBHelper {
      * Fetch a restaurant by its ID.
      */
     static fetchRestaurantById(id, callback) {
-        DBHelper.retrieveRestaurants(callback)
+        DBHelper.retrieveRestaurants(callback, id)
         .catch(error => {
             fetch(`${DBHelper.DATABASE_URL}/${id}`)
                 .then(response => response.json())
@@ -249,5 +255,5 @@ class DBHelper {
 }
 
 DBHelper[idbPromiseSymbol] = idb.open('restaurants', 1, upgradeDB => {
-    const restaruantListStore = upgradeDB.createObjectStore('restarurantListStore', { keyPath: 'name' });
+    const restaruantListStore = upgradeDB.createObjectStore('restarurantListStore', { keyPath: 'id' });
 });
