@@ -100,11 +100,6 @@ function scripts() {
                         }
                     ]
                 ],
-                // plugins: [
-                //     ['transform-es2015-modules-commonjs', {
-                //         'allowTopLevelThis': true
-                //     }]
-                // ]
             })
         )
         // .pipe(concat('all.js'))
@@ -126,11 +121,6 @@ function scriptsDist() {
                     },
                 }]
             ],
-            // plugins: [
-                //     ['transform-es2015-modules-commonjs', {
-                    //         'allowTopLevelThis': true
-                    //     }]
-                    // ]
                 })
             )
             // .pipe(concat('all.js'))
@@ -147,7 +137,6 @@ function vendor() {
 }
 
 function copyFromRoot() {
-    // return gulp.src(['sw.js']).pipe(gulp.dest('dist'));
     return gulp.src(['sw.js', 'manifest.webmanifest', 'favicon.ico']).pipe(gulp.dest('dist'));
 }
 
