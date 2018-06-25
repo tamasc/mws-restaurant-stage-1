@@ -7,7 +7,6 @@ const STATIC_ASSETS = [
   '/js/restaurant_info.js',
   '/vendor/vendor.js',
   '/restaurant.html',
-  'lozad.min.js',
   '/img/1.jpg',
   '/img/2.jpg',
   '/img/3.jpg',
