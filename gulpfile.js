@@ -19,6 +19,9 @@ const pump = require('pump');
 // Browser sync import
 const browserSync = require('browser-sync').create();
 
+// Helper variables
+const errorMessage = 'Error: <%= error.message %>';
+
 // Gulp tasks
 gulp.task(
     'default',
@@ -32,7 +35,8 @@ gulp.task(
 );
 gulp.task('styles', sassConverter);
 gulp.task('copy-html', copyHtml);
-gulp.task('copy-images', copyImages);
+gulp.task('copy-vector-images', copyVectorImages);
+gulp.task('copy-images', ['copy-vector-images'], copyRasterImages);
 gulp.task('copy-from-root', copyFromRoot);
 gulp.task('scripts', scripts);
 gulp.task('scripts-dist', scriptsDist);
@@ -57,15 +61,15 @@ function defaultTask() {
 function copyHtml() {
     return gulp
         .src('*.html')
-        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+        .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
         .pipe(replace('@@GOOGLE_MAPS_API_KEY', config.GOOGLE_MAPS_API_KEY))
         .pipe(gulp.dest('dist'));
 }
 
-function copyImages() {
+function copyRasterImages() {
     return gulp
-        .src('img/*')
-        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+        .src(['img/*', '!img/*.svg'])
+        .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
         .pipe(responsive({
             '*.jpg': {
                 width: 700,
@@ -78,10 +82,17 @@ function copyImages() {
         .pipe(gulp.dest('dist/img'));
 }
 
+function copyVectorImages() {
+    return gulp
+        .src(['img/*.svg'])
+        .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
+        .pipe(gulp.dest('dist/img'));
+}
+
 function sassConverter() {
     return gulp
         .src('./sass/**/*.scss')
-        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+        .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
         .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
         .pipe(
             autoprefixer({
@@ -94,7 +105,7 @@ function sassConverter() {
 function scripts() {
     return gulp
         .src(['js/**/*.js'])
-        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+        .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
         .pipe(sourcemaps.init())
         .pipe(
             babel({
@@ -140,7 +151,7 @@ function scriptsDist() {
 function vendor() {
     return gulp
         .src(['vendor/**/*.js'])
-        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+        .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest('dist/vendor'));
 }
@@ -148,7 +159,7 @@ function vendor() {
 function copyFromRoot() {
     return gulp
         .src(['sw.js', 'manifest.webmanifest', 'favicon.ico'])
-        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+        .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
         .pipe(gulp.dest('dist'));
 }
 
@@ -161,7 +172,7 @@ function cleanDist() {
 function copyIdb() {
     return gulp
         .src('js/idb.js')
-        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
+        .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
         .pipe(
             babel({
                 presets: [
