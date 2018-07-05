@@ -12,7 +12,8 @@ const sourcemaps = require('gulp-sourcemaps');
 const babel = require('gulp-babel');
 const replace = require('gulp-replace');
 const responsive = require('gulp-responsive');
-var pump = require('pump');
+const plumber = require('gulp-plumber');
+const pump = require('pump');
 
 // Browser sync import
 const browserSync = require('browser-sync').create();
@@ -53,13 +54,17 @@ function defaultTask() {
 }
 
 function copyHtml() {
-    return gulp.src('*.html')
+    return gulp
+        .src('*.html')
+        .pipe(plumber())
         .pipe(replace('@@GOOGLE_MAPS_API_KEY', config.GOOGLE_MAPS_API_KEY))
         .pipe(gulp.dest('dist'));
 }
 
 function copyImages() {
-    return gulp.src('img/*')
+    return gulp
+        .src('img/*')
+        .pipe(plumber())
         .pipe(responsive({
             '*.jpg': {
                 width: 700,
@@ -75,6 +80,7 @@ function copyImages() {
 function sassConverter() {
     return gulp
         .src('./sass/**/*.scss')
+        .pipe(plumber())
         .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
         .pipe(
             autoprefixer({
@@ -87,6 +93,7 @@ function sassConverter() {
 function scripts() {
     return gulp
         .src(['js/**/*.js'])
+        .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(
             babel({
@@ -109,43 +116,51 @@ function scripts() {
 
 function scriptsDist() {
     return gulp
-    .src(['js/**/*.js'])
-    .pipe(sourcemaps.init())
-    .pipe(
-        babel({
-            presets: [
-                ['env',
-                {
-                    'targets': {
-                        'browsers': ['last 2 versions', 'safari >= 7']
-                    },
-                }]
-            ],
-                })
-            )
-            // .pipe(concat('all.js'))
-            .pipe(sourcemaps.write('.'))
-            .pipe(uglify())
-            .pipe(gulp.dest('dist/js'));
-        }
+        .src(['js/**/*.js'])
+        .pipe(sourcemaps.init())
+        .pipe(
+            babel({
+                presets: [
+                    ['env',
+                        {
+                            'targets': {
+                                'browsers': ['last 2 versions', 'safari >= 7']
+                            },
+                        }]
+                ],
+            })
+        )
+        // .pipe(concat('all.js'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(uglify())
+        .pipe(gulp.dest('dist/js'));
+}
 
 function vendor() {
     return gulp
         .src(['vendor/**/*.js'])
+        .pipe(plumber())
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest('dist/vendor'));
 }
 
 function copyFromRoot() {
-    return gulp.src(['sw.js', 'manifest.webmanifest', 'favicon.ico']).pipe(gulp.dest('dist'));
+    return gulp
+        .src(['sw.js', 'manifest.webmanifest', 'favicon.ico'])
+        .pipe(plumber())
+        .pipe(gulp.dest('dist'));
 }
 
 function cleanDist() {
-    return gulp.src('dist', { read: false }).pipe(clean());
+    return gulp
+        .src('dist', { read: false })
+        .pipe(clean());
 }
 
 function copyIdb() {
-    return gulp.src('js/idb.js')
+    return gulp
+        .src('js/idb.js')
+        .pipe(plumber())
         .pipe(
             babel({
                 presets: [
