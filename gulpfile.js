@@ -13,6 +13,7 @@ const babel = require('gulp-babel');
 const replace = require('gulp-replace');
 const responsive = require('gulp-responsive');
 const plumber = require('gulp-plumber');
+const notify = require("gulp-notify");
 const pump = require('pump');
 
 // Browser sync import
@@ -56,7 +57,7 @@ function defaultTask() {
 function copyHtml() {
     return gulp
         .src('*.html')
-        .pipe(plumber())
+        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
         .pipe(replace('@@GOOGLE_MAPS_API_KEY', config.GOOGLE_MAPS_API_KEY))
         .pipe(gulp.dest('dist'));
 }
@@ -64,7 +65,7 @@ function copyHtml() {
 function copyImages() {
     return gulp
         .src('img/*')
-        .pipe(plumber())
+        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
         .pipe(responsive({
             '*.jpg': {
                 width: 700,
@@ -80,7 +81,7 @@ function copyImages() {
 function sassConverter() {
     return gulp
         .src('./sass/**/*.scss')
-        .pipe(plumber())
+        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
         .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
         .pipe(
             autoprefixer({
@@ -93,7 +94,7 @@ function sassConverter() {
 function scripts() {
     return gulp
         .src(['js/**/*.js'])
-        .pipe(plumber())
+        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
         .pipe(sourcemaps.init())
         .pipe(
             babel({
@@ -139,7 +140,7 @@ function scriptsDist() {
 function vendor() {
     return gulp
         .src(['vendor/**/*.js'])
-        .pipe(plumber())
+        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest('dist/vendor'));
 }
@@ -147,7 +148,7 @@ function vendor() {
 function copyFromRoot() {
     return gulp
         .src(['sw.js', 'manifest.webmanifest', 'favicon.ico'])
-        .pipe(plumber())
+        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
         .pipe(gulp.dest('dist'));
 }
 
@@ -160,7 +161,7 @@ function cleanDist() {
 function copyIdb() {
     return gulp
         .src('js/idb.js')
-        .pipe(plumber())
+        .pipe(plumber({ errorHandler: notify.onError("Error: <%= error.message %>") }))
         .pipe(
             babel({
                 presets: [
