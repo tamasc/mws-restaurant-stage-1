@@ -4,7 +4,7 @@ class RenderHelper {
         const favouriteIcon = document.createElement('span');
         favouriteIcon.setAttribute('role', 'img');
         favouriteIcon.classList.add('favourite-icon');
-        if (restaurantData.s_favorite) {
+        if (restaurantData.is_favorite) {
           favouriteIcon.setAttribute('aria-label', 'Remove from favourites');
           favouriteIcon.innerHTML = '&#9733;';
         } else {
