@@ -238,7 +238,7 @@ section {
     }
     .name-container {
       position: relative;
-      .favourite-icon {
+      .favorite-icon {
         top: -16px;
         right: -12px;
         padding: 10px;
@@ -407,15 +407,15 @@ section {
   }
 }
 
-// Favourite icon
-span.favourite-icon {
+// favorite icon
+span.favorite-icon {
   cursor: pointer;
   font-size: 24px;
   position: absolute;
   top: -16px;
   right: -12px;
   padding: 10px;
-  &[aria-label="Remove from favourites"] {
+  &[aria-label="Remove from favorites"] {
     color: #f58500;
   }
 }
