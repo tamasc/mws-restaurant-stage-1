@@ -262,9 +262,8 @@ class DBHelper {
         })
             .then(response => response.json())
             .then(restaurants => {
-                DBHelper.storeRestaurants(restaurants)
+                return DBHelper.storeRestaurants(restaurants)
                     .then((e) => {
-                        console.log(e, restaurants)
                         return restaurants;
                     });
             })
