@@ -13,7 +13,7 @@ const babel = require('gulp-babel');
 const replace = require('gulp-replace');
 const responsive = require('gulp-responsive');
 const plumber = require('gulp-plumber');
-const notify = require("gulp-notify");
+const notify = require('gulp-notify');
 const pump = require('pump');
 
 // Browser sync import
@@ -119,6 +119,7 @@ function scripts() {
                         }
                     ]
                 ],
+                plugins: ['transform-class-properties']
             })
         )
         // .pipe(concat('all.js'))
