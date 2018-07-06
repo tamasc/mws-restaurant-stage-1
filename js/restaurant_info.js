@@ -62,9 +62,9 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
-  const favouriteIcon = RenderHelper.createFavouriteIcon(restaurant);
+  const favoriteIcon = RenderHelper.createFavoriteIcon(restaurant);
   const container = document.getElementById('name-container');
-  container.append(favouriteIcon);
+  container.append(favoriteIcon);
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img';

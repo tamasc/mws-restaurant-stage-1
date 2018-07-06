@@ -181,9 +181,9 @@ const createRestaurantHTML = (restaurant) => {
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
 
-  const favouriteIcon = RenderHelper.createFavouriteIcon(restaurant);
+  const favoriteIcon = RenderHelper.createFavoriteIcon(restaurant);
 
-  nameContainer.append(name, favouriteIcon);
+  nameContainer.append(name, favoriteIcon);
 
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
