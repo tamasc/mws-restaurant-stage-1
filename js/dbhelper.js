@@ -18,7 +18,7 @@ class DBHelper {
      * Store restaurant or array of restaurants in IndexedDB.
      */
     static storeRestaurants(restaurants) {
-        DBHelper.idbPromise.then(db => {
+        return DBHelper.idbPromise.then(db => {
             const tx = db.transaction('restarurantListStore', 'readwrite');
             const store = tx.objectStore('restarurantListStore');
             if (Array.isArray(restaurants)) {
@@ -26,7 +26,7 @@ class DBHelper {
                     .then(e => tx.complete)
                     .catch(error => console.warn('Error has occured while storing the restaurants in DB', error))
             }
-            return store.put(restaurant)
+            return store.put(restaurants)
                 .then(e => tx.complete)
                 .catch(error => console.warn(
                     `Error has occured while storing the ${restaurant.name || ''} restaurant in DB`, error)
@@ -49,13 +49,13 @@ class DBHelper {
             }
 
             return promise.then((data) => {
-                    if (!data || (Array.isArray(data) && data.length < 1)) {
-                        tx.abort();
-                        throw new Error('No record found.')
-                    }
-                    callback(null, data);
-                    return tx.complete;
-                })
+                if (!data || (Array.isArray(data) && data.length < 1)) {
+                    tx.abort();
+                    throw new Error('No record found.')
+                }
+                callback(null, data);
+                return tx.complete;
+            })
                 .catch(error => {
                     callback(`Error has occured while retrieving data from DB: ${error}`, null)
                     tx.abort();
@@ -97,19 +97,19 @@ class DBHelper {
      */
     static fetchRestaurantById(id, callback) {
         DBHelper.retrieveRestaurants(callback, id)
-        .catch(error => {
-            fetch(`${DBHelper.DATABASE_URL}/${id}`)
-                .then(response => response.json())
-                .then(restaurant => {
-                    if (restaurant) {
-                        DBHelper.storeRestaurants(restaurant);
-                        callback(null, restaurant);
-                        return;
-                    }
-                    callback('Restaurant does not exist', null);
-                })
-                .catch(error => callback(error, null));
-        })
+            .catch(error => {
+                fetch(`${DBHelper.DATABASE_URL}/${id}`)
+                    .then(response => response.json())
+                    .then(restaurant => {
+                        if (restaurant) {
+                            DBHelper.storeRestaurants(restaurant);
+                            callback(null, restaurant);
+                            return;
+                        }
+                        callback('Restaurant does not exist', null);
+                    })
+                    .catch(error => callback(error, null));
+            })
     }
 
     /**
@@ -251,6 +251,26 @@ class DBHelper {
             animation: google.maps.Animation.DROP
         });
         return marker;
+    }
+
+    /**
+     * Mark and unmark favorite restaurants
+     */
+    static modifyFavorites(restaurantId, isFavorite) {
+        return fetch(`${DBHelper.DATABASE_URL}/${restaurantId}?is_favorite=${isFavorite}`, {
+            method: 'PUT',
+        })
+            .then(response => response.json())
+            .then(restaurants => {
+                DBHelper.storeRestaurants(restaurants)
+                    .then((e) => {
+                        console.log(e, restaurants)
+                        return restaurants;
+                    });
+            })
+            .catch(error => {
+                console.warn(`Request failed. Returned status of ${error}`, null);
+            });
     }
 }
 
