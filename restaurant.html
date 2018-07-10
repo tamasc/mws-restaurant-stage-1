@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#3397DB"/>
+  <meta name="theme-color" content="#3397DB" />
   <!-- Normalize.css for better cross-browser consistency -->
-  <link rel="stylesheet"  media="all" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  <link rel="stylesheet" media="all" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
   <!-- Main CSS file -->
-  <link rel="stylesheet"  media="all" href="css/styles.css" type="text/css">
+  <link rel="stylesheet" media="all" href="css/styles.css" type="text/css">
   <!-- Manifest file -->
   <link rel="manifest" href="/manifest.webmanifest">
   <!-- Favicon -->
@@ -32,12 +32,16 @@
   <header>
     <!-- Beginning nav -->
     <div class="heading-container">
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1>
+        <a href="/">Restaurant Reviews</a>
+      </h1>
     </div>
     <!-- Beginning breadcrumb -->
     <nav aria-label="Breadcrumb">
-      <ul id="breadcrumb" >
-        <li><a href="/">Home</a></li>
+      <ul id="breadcrumb">
+        <li>
+          <a href="/">Home</a>
+        </li>
       </ul>
     </nav>
     <!-- End breadcrumb -->
@@ -63,6 +67,22 @@
       <table id="restaurant-hours"></table>
     </section>
     <!-- end restaurant -->
+    <!-- Beginning review form -->
+    <section id="review-form-container">
+      <h3>Add review</h3>
+      <form id="review-form" action="#">
+        <div class="input-container">
+          <input type="number" name="rating" id="review-rating" aria-label="Rating" min="1" max="5"
+            placeholder="Enter your rating." required>
+          <input type="text" name="name" id="reviewer-name" aria-label="Reviewer's name" minlength="3" maxlength="20"
+            placeholder="Enter your name." required>
+        </div>
+        <textarea id="new-review" aria-label="Review text" name="review" rows="5" minlength="3" maxlength="100"
+          placeholder="Enter your review here." required></textarea>
+        <input type="submit" value="SUBMIT">
+      </form>
+    </section>
+    <!-- end review form -->
     <!-- Beginning reviews -->
     <section id="reviews-container">
       <ul id="reviews-list"></ul>
@@ -73,7 +93,10 @@
 
   <!-- Beginning footer -->
   <footer id="footer">
-    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    Copyright (c) 2017
+    <a href="/">
+      <strong>Restaurant Reviews</strong>
+    </a> All Rights Reserved.
   </footer>
   <!-- End footer -->
 

@@ -208,16 +208,7 @@ section {
     min-width: 270px;
     flex: 0 1 360px;
     a {
-      background-color: orange;
-      border-bottom: 3px solid #eee;
-      color: #fff;
-      display: inline-block;
-      font-size: 10pt;
       margin: 15px 0 0;
-      padding: 8px 30px 10px;
-      text-align: center;
-      text-decoration: none;
-      text-transform: uppercase;
     }
     p {
       margin: 0;
@@ -318,22 +309,56 @@ section {
   text-transform: uppercase;
 }
 
-#restaurant-container, #reviews-container {
+#restaurant-container,
+#reviews-container,
+#review-form-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
-  padding: 140px 40px 30px;
+  padding: 30px 40px;
   width: calc(50% - 80px);
+}
+
+#restaurant-container {
+  padding: 140px 40px 30px;
+}
+
+#review-form-container {
+  input {
+    box-sizing: border-box;
+
+  }
+  .input-container {
+    display: flex;
+    flex-wrap: wrap;
+    input {
+      padding: 4px;
+    }
+    input[type="text"] {
+      flex: 3 0 60px;
+    }
+    input[type="number"] {
+      flex: 1 0 60px;
+    }
+  }
+  textarea, input[type="submit"] {
+    width: 100%;
+  }
+  textarea {
+    resize: none;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
+  input[type="submit"] {
+    height: 35px;
+    border-style: solid;
+  }
 }
 
 #name-container {
   position: relative;
 }
 
-#reviews-container {
-  padding: 30px 40px;
-}
-
-#reviews-container h3 {
+#reviews-container h3, #review-form-container h3 {
   color: #FFA42E;
   font-size: 24pt;
   font-weight: 300;
@@ -385,11 +410,6 @@ section {
     font-size: 3vw;
   }
 
-  #restaurant-container, #reviews-container {
-    width: calc(100% - 80px);
-    padding: 30px 40px;
-  }
-
   #breadcrumb {
     width: calc(100% - 80px);
   }
@@ -401,6 +421,12 @@ section {
   .inside #footer {
     width: 100%;
   }
+
+  #restaurant-container,
+  #reviews-container,
+  #review-form-container {
+    width: calc(100% - 80px);
+  }
 }
 
 @media screen and (max-width: 442px) {
@@ -408,6 +434,8 @@ section {
     height: 90px;
   }
 }
+
+/* ===================== Common styles ===================== */
 
 // favorite icon
 span.favorite-icon {
@@ -420,4 +448,19 @@ span.favorite-icon {
   &[aria-label="Remove from favorites"] {
     color: #FFA42E;
   }
+}
+
+
+// buttons
+
+#restaurants-list li a, #review-form-container input[type="submit"] {
+  background-color: orange;
+  border-bottom: 3px solid #eee;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
 }
