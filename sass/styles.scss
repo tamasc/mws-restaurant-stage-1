@@ -166,21 +166,23 @@ section {
   margin: 0 20px;
 }
 
-.filter-options select {
-  background-color: white;
-  border: 1px solid #fff;
-  font-family: Arial,sans-serif;
-  font-size: 11pt;
-  height: 35px;
-  letter-spacing: 0;
-  margin: 10px;
-  padding: 0 10px;
-  width: 200px;
+.filter-options {
+  select {
+    font-family: Arial,sans-serif;
+    height: 35px;
+    letter-spacing: 0;
+    margin: 10px;
+    padding: 0 10px;
+    width: 200px;
+    background-color: white;
+    border: 1px solid #fff;
+    font-size: 11pt;
+  }
 }
 
 .select-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
@@ -332,7 +334,7 @@ section {
 }
 
 #reviews-container h3 {
-  color: #f58500;
+  color: #FFA42E;
   font-size: 24pt;
   font-weight: 300;
   letter-spacing: -1px;
@@ -362,7 +364,7 @@ section {
 
 #reviews-list li p:first-of-type {
   font-weight: bold;
-  color: #f58500;
+  color: #FFA42E;
 }
 
 #restaurant-hours td {
@@ -416,6 +418,6 @@ span.favorite-icon {
   right: -12px;
   padding: 10px;
   &[aria-label="Remove from favorites"] {
-    color: #f58500;
+    color: #FFA42E;
   }
 }
