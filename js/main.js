@@ -103,22 +103,27 @@ window.initMap = () => {
 const updateRestaurants = () => {
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
+  const fSelect = document.getElementById('favorites-select');
 
   // reset aria-selected attr on options
   resetSelectOptions(cSelect);
   resetSelectOptions(nSelect);
+  resetSelectOptions(fSelect);
 
   const cIndex = cSelect.selectedIndex;
   const nIndex = nSelect.selectedIndex;
+  const fIndex = fSelect.selectedIndex;
 
   // set aria-selected attr on active options
   cSelect[cIndex].setAttribute('aria-selected', true);
   nSelect[nIndex].setAttribute('aria-selected', true);
+  fSelect[fIndex].setAttribute('aria-selected', true);
 
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
+  const favorite = fSelect[fIndex].value;
 
-  DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
+  DBHelper.fetchRestaurantByAllFilters(cuisine, neighborhood, favorite, (error, restaurants) => {
     if (error) { // Got an error!
       console.error(error);
     } else {

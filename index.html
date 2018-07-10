@@ -36,12 +36,20 @@
           <select aria-label="Select cuisine" role="listbox" id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
             <option value="all">All Cuisines</option>
           </select>
+          <select aria-label="Select favorites" role="listbox" id="favorites-select" name="favorites" onchange="updateRestaurants()">
+            <option value="all">All Restaurants</option>
+            <option value="favorites">Favorites</option>
+            <option value="non-favorites">Non-favorites</option>
+          </select>
         </div>
       </div>
       <ul id="restaurants-list"></ul>
     </section>
   </main>
-
+  <label class="switch">
+    <input type="checkbox" checked>
+    <span class="slider round"></span>
+  </label>
   <script type="application/javascript" src="vendor/vendor.js"></script>
   <script type="application/javascript" src="js/renderhelper.js"></script>
   <script type="application/javascript" src="js/dbhelper.js"></script>

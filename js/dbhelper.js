@@ -149,11 +149,12 @@ class DBHelper {
     }
 
     /**
-     * Fetch restaurants by a cuisine and a neighborhood with proper error handling.
+     * Fetch restaurants by all filters with proper error handling.
      */
-    static fetchRestaurantByCuisineAndNeighborhood(
+    static fetchRestaurantByAllFilters(
         cuisine,
         neighborhood,
+        favorite,
         callback
     ) {
         // Fetch all restaurants
@@ -162,15 +163,23 @@ class DBHelper {
                 callback(error, null);
             } else {
                 let results = restaurants;
-                if (cuisine != 'all') {
+                if (cuisine !== 'all') {
                     // filter by cuisine
-                    results = results.filter(r => r.cuisine_type == cuisine);
+                    results = results.filter(r => r.cuisine_type === cuisine);
                 }
-                if (neighborhood != 'all') {
+                if (neighborhood !== 'all') {
                     // filter by neighborhood
                     results = results.filter(
-                        r => r.neighborhood == neighborhood
+                        r => r.neighborhood === neighborhood
                     );
+                }
+                if (favorite !== 'all') {
+                    // filter by favorites
+                    results = results.filter(r => {
+                        const isFavoriteBool = JSON.parse(r.is_favorite);
+                        if (favorite === 'favorites') return isFavoriteBool;
+                        return !isFavoriteBool
+                    });
                 }
                 callback(null, results);
             }
