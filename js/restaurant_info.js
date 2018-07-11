@@ -8,6 +8,24 @@ if ('serviceWorker' in navigator) {
 let restaurant;
 var map;
 
+const reviewForm = document.querySelector('#review-form');
+const reviewField = document.querySelector('#new-review');
+const nameField = document.querySelector('#reviewer-name');
+const rateField = document.querySelector('#review-rating');
+
+reviewForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    DBHelper.postReview({
+      restaurantId: self.restaurant.id,
+      rating: rateField.value,
+      name: nameField.value,
+      comments: reviewField.value
+    })
+    reviewField.value = '';
+    nameField.value = '';
+    rateField.value = '';
+});
+
 /**
  * Initialize Google map, called from HTML.
  */

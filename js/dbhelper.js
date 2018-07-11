@@ -70,7 +70,7 @@ class DBHelper {
      */
     static get DATABASE_URL() {
         const port = 1337; // Change this to your server port
-        return `http://localhost:${port}/restaurants`;
+        return `http://localhost:${port}`;
     }
 
     /**
@@ -79,7 +79,7 @@ class DBHelper {
     static fetchRestaurants(callback) {
         DBHelper.retrieveRestaurants(callback)
             .catch(error => {
-                fetch(`${DBHelper.DATABASE_URL}`)
+                fetch(`${DBHelper.DATABASE_URL}/restaurants`)
                     .then(response => response.json())
                     .then(restaurants => {
                         DBHelper.storeRestaurants(restaurants);
@@ -98,7 +98,7 @@ class DBHelper {
     static fetchRestaurantById(id, callback) {
         DBHelper.retrieveRestaurants(callback, id)
             .catch(error => {
-                fetch(`${DBHelper.DATABASE_URL}/${id}`)
+                fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`)
                     .then(response => response.json())
                     .then(restaurant => {
                         if (restaurant) {
@@ -266,8 +266,8 @@ class DBHelper {
      * Mark and unmark favorite restaurants
      */
     static modifyFavorites(restaurantId, isFavorite) {
-        return fetch(`${DBHelper.DATABASE_URL}/${restaurantId}?is_favorite=${isFavorite}`, {
-            method: 'PUT',
+        return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurantId}?is_favorite=${isFavorite}`, {
+            method: 'PUT'
         })
             .then(response => response.json())
             .then(restaurants => {
@@ -275,6 +275,33 @@ class DBHelper {
                     .then((e) => {
                         return restaurants;
                     });
+            })
+            .catch(error => {
+                console.warn(`Request failed. Returned status of ${error}`, null);
+            });
+    }
+
+    /**
+     * Post review
+     */
+    static postReview({ restaurantId, rating, name, comments }, callback) {
+        const data = {
+            restaurant_id: restaurantId,
+            rating,
+            name,
+            comments
+        }
+        return fetch(`${DBHelper.DATABASE_URL}/reviews`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(review => {
+                console.log(review)
+                callback && callback(review);
             })
             .catch(error => {
                 console.warn(`Request failed. Returned status of ${error}`, null);
