@@ -34,4 +34,17 @@ class RenderHelper {
 		}
 		console.log(oldIcon)
 	}
+
+	static formatDate(dateObject) {
+		if (isNaN(dateObject)) return '';
+        const addTrailingZero = (number) => ('0' + number).slice(-2);
+
+        const year = dateObject.getFullYear();
+        const month = addTrailingZero(dateObject.getMonth() + 1);
+        const day = addTrailingZero(dateObject.getDate());
+        const hours = dateObject.getHours();
+        const minutes = addTrailingZero(dateObject.getMinutes());
+
+        return `${year}.${month}.${day} ${hours}:${minutes}`;
+    }
 }

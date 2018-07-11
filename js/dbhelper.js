@@ -282,6 +282,18 @@ class DBHelper {
     }
 
     /**
+     * Fetch reviews by restaurant id
+     */
+
+    static fetchReviewsByRestaurantId(id) {
+        return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`)
+            .then(response => response.json())
+            .catch(error => {
+                console.warn(`Request failed. Returned status of ${error}`, null);
+            });
+    }
+
+    /**
      * Post review
      */
     static postReview({ restaurantId, rating, name, comments }, callback) {

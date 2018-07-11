@@ -48,6 +48,7 @@
         })
       }
     });
+    fetchReviewsFromURL();
   }
 
   /**
@@ -58,7 +59,7 @@
       callback(null, self.restaurant)
       return;
     }
-    const id = getParameterByName('id');
+    const id = self.id || getParameterByName('id');
     if (!id) { // no id found in URL
       const error = 'No restaurant id in URL'
       callback(error, null);
@@ -71,6 +72,19 @@
         }
         fillRestaurantHTML();
         callback(null, restaurant)
+      });
+    }
+  }
+
+  const fetchReviewsFromURL = () =>  {
+    const id = self.id || getParameterByName('id');
+    if (!id) { // no id found in URL
+      window.location.href = '/';
+    } else {
+      DBHelper.fetchReviewsByRestaurantId(id)
+      .then(reviews => {
+        // fill reviews
+        fillReviewsHTML(reviews);
       });
     }
   }
@@ -101,8 +115,6 @@
     if (restaurant.operating_hours) {
       fillRestaurantHoursHTML();
     }
-    // fill reviews
-    fillReviewsHTML();
   }
 
   /**
@@ -128,13 +140,13 @@
   /**
    * Create all reviews HTML and add them to the webpage.
    */
-  const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+  const fillReviewsHTML = (reviews) => {
     const container = document.getElementById('reviews-container');
     const title = document.createElement('h3');
     title.innerHTML = 'Reviews';
     container.appendChild(title);
 
-    if (!reviews) {
+    if (!reviews && reviews.length < 1) {
       const noReviews = document.createElement('p');
       noReviews.innerHTML = 'No reviews yet!';
       container.appendChild(noReviews);
@@ -157,7 +169,7 @@
     li.appendChild(name);
 
     const date = document.createElement('p');
-    date.innerHTML = review.date;
+    date.innerHTML = RenderHelper.formatDate(new Date(review.createdAt));
     li.appendChild(date);
 
     const rating = document.createElement('p');
