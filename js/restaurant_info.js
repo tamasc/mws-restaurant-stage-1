@@ -23,6 +23,9 @@
         name: nameField.value,
         comments: reviewField.value
       })
+      .then(review => {
+        fetchReviewsFromURL();
+      })
       reviewField.value = '';
       nameField.value = '';
       rateField.value = '';

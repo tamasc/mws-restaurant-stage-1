@@ -313,7 +313,7 @@ class DBHelper {
             .then(response => response.json())
             .then(review => {
                 console.log(review)
-                callback && callback(review);
+                return review;
             })
             .catch(error => {
                 console.warn(`Request failed. Returned status of ${error}`, null);
