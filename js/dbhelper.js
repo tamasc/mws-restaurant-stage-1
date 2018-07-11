@@ -1,7 +1,8 @@
 // TODO: fix ipmorting from node_modules
 // import idb from 'idb';
 
-const idbPromiseSymbol = Symbol('idbPromise');
+const restaurantSymbol = Symbol('restaurantDB');
+
 /**
  * Common database helper functions.
  */
@@ -10,37 +11,27 @@ class DBHelper {
      * IndexedDB promise.
      * Declared after the class definition as a static property.
      */
-    static get idbPromise() {
-        return DBHelper[idbPromiseSymbol];
+    static get restaurantDBPromise() {
+        return DBHelper[restaurantSymbol];
     }
 
     /**
-     * Store restaurant or array of restaurants in IndexedDB.
+     * Store a restaurant or an array of restaurants in IndexedDB.
      */
     static storeRestaurants(restaurants) {
-        return DBHelper.idbPromise.then(db => {
-            const tx = db.transaction('restarurantListStore', 'readwrite');
-            const store = tx.objectStore('restarurantListStore');
-            if (Array.isArray(restaurants)) {
-                return Promise.all(restaurants.map(restaurant => store.put(restaurant)))
-                    .then(e => tx.complete)
-                    .catch(error => console.warn('Error has occured while storing the restaurants in DB', error))
-            }
-            return store.put(restaurants)
-                .then(e => tx.complete)
-                .catch(error => console.warn(
-                    `Error has occured while storing the ${restaurant.name || ''} restaurant in DB`, error)
-                )
-        });
+        return DBHelper._store('restarurantStore', restaurants)
+            .catch(error => console.warn(
+                'Error has occured while storing the restaurants in DB', error)
+            )
     }
 
     /**
      * Get restaurant or array of restaurants in IndexedDB.
      */
     static retrieveRestaurants(callback, id) {
-        return DBHelper.idbPromise.then(db => {
-            const tx = db.transaction('restarurantListStore', 'readwrite');
-            const store = tx.objectStore('restarurantListStore');
+        return DBHelper.restaurantDBPromise.then(db => {
+            const tx = db.transaction('restarurantStore', 'readwrite');
+            const store = tx.objectStore('restarurantStore');
             let promise;
             if (id !== undefined) {
                 promise = store.get(Number(id))
@@ -319,8 +310,36 @@ class DBHelper {
                 console.warn(`Request failed. Returned status of ${error}`, null);
             });
     }
+
+    /**
+     * Store a review or an array of reviews in IndexedDB.
+     */
+    static storeReviews(reviews) {
+        return DBHelper._store('reviewStore', reviews)
+        .catch(error => console.warn(
+            'Error has occured while storing the reviews in DB', error
+        ));
+    }
+
+    /**
+     * General function for storing data in IDB.
+     */
+    static _store(storeName, dataToStore) {
+        return DBHelper.restaurantDBPromise.then(db => {
+            const tx = db.transaction(storeName, 'readwrite');
+            const store = tx.objectStore(storeName);
+            if (Array.isArray(dataToStore)) {
+                return Promise.all(dataToStore.map(data => store.put(data)))
+                    .then(e => tx.complete)
+            }
+            return store.put(dataToStore)
+                .then(e => tx.complete)
+        });
+    }
 }
 
-DBHelper[idbPromiseSymbol] = idb.open('restaurants', 1, upgradeDB => {
-    const restaruantListStore = upgradeDB.createObjectStore('restarurantListStore', { keyPath: 'id' });
+DBHelper[restaurantSymbol] = idb.open('restaurants', 1, upgradeDB => {
+    upgradeDB.createObjectStore('restarurantStore', { keyPath: 'id' });
+    upgradeDB.createObjectStore('reviewStore', { keyPath: 'id' });
+    return upgradeDB
 });
