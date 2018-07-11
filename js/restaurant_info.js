@@ -86,7 +86,6 @@
     } else {
       DBHelper.fetchReviewsByRestaurantId(id)
       .then(reviews => {
-        DBHelper.storeReviews(reviews);
         // fill reviews
         fillReviewsHTML(reviews);
       });

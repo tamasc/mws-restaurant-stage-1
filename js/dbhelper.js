@@ -30,7 +30,7 @@ class DBHelper {
      */
     static retrieveRestaurants(callback, id) {
         return DBHelper.restaurantDBPromise.then(db => {
-            const tx = db.transaction('restarurantStore', 'readwrite');
+            const tx = db.transaction('restarurantStore');
             const store = tx.objectStore('restarurantStore');
             let promise;
             if (id !== undefined) {
@@ -277,11 +277,19 @@ class DBHelper {
      */
 
     static fetchReviewsByRestaurantId(id) {
-        return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`)
-            .then(response => response.json())
+        return DBHelper.retrieveReviews(id)
+            .then((reviews) => {
+                DBHelper.storeReviews(reviews);
+                return reviews;
+            })
             .catch(error => {
-                console.warn(`Request failed. Returned status of ${error}`, null);
-            });
+                return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`)
+                    .then(response => response.json())
+                    .catch(error => {
+                        console.warn(`Request failed. Returned status of ${error}`, null);
+                        return Promise.reject(error);
+                });
+        })
     }
 
     /**
@@ -319,6 +327,22 @@ class DBHelper {
         .catch(error => console.warn(
             'Error has occured while storing the reviews in DB', error
         ));
+    }
+
+    /**
+     * Get array of reviews from IndexedDB.
+     */
+    static retrieveReviews(id) {
+        return DBHelper.restaurantDBPromise.then(db => {
+            const tx = db.transaction('reviewStore');
+            const store = tx.objectStore('reviewStore');
+            const idIndex = store.index('restaurant_id');
+
+            return idIndex.getAll(id);
+        }).catch(error => {
+            console.warn('Error has occured while retrieving data from DB:', error);
+            return Promise.reject(error);
+        });
     }
 
     /**
