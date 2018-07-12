@@ -278,18 +278,18 @@ class DBHelper {
 
     static fetchReviewsByRestaurantId(id) {
         return DBHelper.retrieveReviews(id)
-            .then((reviews) => {
-                DBHelper.storeReviews(reviews);
-                return reviews;
-            })
             .catch(error => {
                 return fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${id}`)
                     .then(response => response.json())
+                    .then((reviews) => {
+                        DBHelper.storeReviews(reviews);
+                        return reviews;
+                    })
                     .catch(error => {
                         console.warn(`Request failed. Returned status of ${error}`, null);
                         return Promise.reject(error);
-                });
-        })
+                    });
+            })
     }
 
     /**
@@ -324,9 +324,9 @@ class DBHelper {
      */
     static storeReviews(reviews) {
         return DBHelper._store('reviewStore', reviews)
-        .catch(error => console.warn(
-            'Error has occured while storing the reviews in DB', error
-        ));
+            .catch(error => console.warn(
+                'Error has occured while storing the reviews in DB', error
+            ));
     }
 
     /**
