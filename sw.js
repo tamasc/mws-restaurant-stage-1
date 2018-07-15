@@ -1,3 +1,6 @@
+importScripts('vendor/idb.min.js');
+importScripts('js/dbhelper.js');
+
 const CACHE = 'mws-restaurant-v1';
 const STATIC_ASSETS = [
   '/',
@@ -6,7 +9,8 @@ const STATIC_ASSETS = [
   '/js/renderhelper.js',
   '/js/main.js',
   '/js/restaurant_info.js',
-  '/vendor/vendor.js',
+  '/vendor/lozad.min.js',
+  '/vendor/idb.min.js',
   '/restaurant.html',
   '/img/1.jpg',
   '/img/2.jpg',
@@ -68,4 +72,23 @@ self.addEventListener('fetch', event => {
             .catch(err => console.warn('Fetching has fas failed: ', err));
     })
   );
+});
+
+self.addEventListener('sync', function(event) {
+  if (event.tag == 'reviewSubmission') {
+    event.waitUntil(DBHelper.getReviewsForSync()
+      .then(reviews => {
+        return Promise.all(
+          reviews.map(review => {
+            DBHelper.postReview(review)
+            .then(e => DBHelper.deleteReviewAfterSync(review.id))
+          }))
+          .then(e => {
+            self.clients.matchAll().then((clients) => {
+              console.log(clients)
+              clients.forEach(client => client.postMessage({ type: 'reviewsPosted'}));
+            });
+          })
+    }));
+  }
 });

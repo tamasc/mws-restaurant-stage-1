@@ -295,12 +295,13 @@ class DBHelper {
     /**
      * Post review
      */
-    static postReview({ restaurantId, rating, name, comments }, callback) {
+    static postReview({ restaurantId, rating, name, comments, createdAt }) {
         const data = {
             restaurant_id: restaurantId,
             rating,
             name,
-            comments
+            comments,
+            createdAt
         }
         return fetch(`${DBHelper.DATABASE_URL}/reviews`, {
             method: 'POST',
@@ -360,10 +361,44 @@ class DBHelper {
                 .then(e => tx.complete)
         });
     }
+
+    static storeReviewsForSync(review) {
+        return DBHelper._store('reviewSyncStore', review)
+            .catch(error => console.warn(
+                'Error has occured while storing the reviews for sync in DB', error
+            ));
+    }
+
+    static getReviewsForSync() {
+        return DBHelper.restaurantDBPromise.then(db => {
+            const tx = db.transaction('reviewSyncStore');
+            const store = tx.objectStore('reviewSyncStore');
+
+            return store.getAll();
+        });
+    }
+
+    static deleteReviewAfterSync(id) {
+        return DBHelper.getStore('reviewSyncStore', 'readwrite')
+        .then(store => store.delete(id));
+    }
+
+    static getStore(storeName, mode) {
+        return DBHelper.restaurantDBPromise.then(db => {
+            let tx;
+            if (mode) {
+                tx = db.transaction(storeName, mode);
+            } else {
+                tx = db.transaction(storeName);
+            }
+            return tx.objectStore(storeName);
+        })
+    }
 }
 
 DBHelper[restaurantSymbol] = idb.open('restaurants', 1, upgradeDB => {
     upgradeDB.createObjectStore('restarurantStore', { keyPath: 'id' });
     upgradeDB.createObjectStore('reviewStore', { keyPath: 'id' });
+    upgradeDB.createObjectStore('reviewSyncStore', { autoIncrement: true, keyPath: 'id' });
     return upgradeDB
 });
