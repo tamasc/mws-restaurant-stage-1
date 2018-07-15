@@ -153,7 +153,7 @@ function vendor() {
     return gulp
         .src(['vendor/**/*.js'])
         .pipe(plumber({ errorHandler: notify.onError(errorMessage) }))
-        .pipe(concat('vendor.js'))
+        // .pipe(concat('vendor.js'))
         .pipe(gulp.dest('dist/vendor'));
 }
 
