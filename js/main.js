@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 const fetchNeighborhoods = () => {
   DBHelper.fetchNeighborhoods((error, neighborhoods) => {
     if (error) { // Got an error
-      console.error(error);
+      console.warn(error);
     } else {
       self.neighborhoods = neighborhoods;
       fillNeighborhoodsHTML();
@@ -125,7 +125,7 @@ const updateRestaurants = () => {
 
   DBHelper.fetchRestaurantByAllFilters(cuisine, neighborhood, favorite, (error, restaurants) => {
     if (error) { // Got an error!
-      console.error(error);
+      console.warn(error);
     } else {
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
