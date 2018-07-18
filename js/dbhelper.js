@@ -256,8 +256,8 @@ class DBHelper {
     /**
      * Mark and unmark favorite restaurants
      */
-    static modifyFavorites(restaurantId, isFavorite) {
-        return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurantId}?is_favorite=${isFavorite}`, {
+    static modifyFavorites(restaurant) {
+        return fetch(`${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}?is_favorite=${restaurant.is_favorite}`, {
             method: 'PUT'
         })
             .then(response => response.json())
@@ -270,6 +270,13 @@ class DBHelper {
             .catch(error => {
                 console.warn(`Request failed. Returned status of ${error}`, null);
             });
+    }
+
+    static storeFavoritesForSync(restaurant) {
+        return DBHelper._store('favoritesSyncStore', restaurant)
+            .catch(error => console.warn(
+                'Error has occured while storing the restaurant for sync in DB', error
+            ));
     }
 
     /**
@@ -400,5 +407,6 @@ DBHelper[restaurantSymbol] = idb.open('restaurants', 1, upgradeDB => {
     upgradeDB.createObjectStore('restarurantStore', { keyPath: 'id' });
     upgradeDB.createObjectStore('reviewStore', { keyPath: 'id' });
     upgradeDB.createObjectStore('reviewSyncStore', { autoIncrement: true, keyPath: 'id' });
+    upgradeDB.createObjectStore('favoritesSyncStore', { autoIncrement: true, keyPath: 'id' });
     return upgradeDB
 });

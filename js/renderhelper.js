@@ -9,10 +9,15 @@ class RenderHelper {
 		favoriteIcon.classList.add('favorite-icon');
 		favoriteIcon.addEventListener(
 			'click', () => {
-				DBHelper.modifyFavorites(restaurant.id, !isFavorite)
-					.then(modifiedRestaurant => {
-						RenderHelper.updateFavoriteIcon(modifiedRestaurant);
-					});
+				const updatedRestaurant = Object.assign({}, restaurant, { is_favorite: !isFavorite })
+				DBHelper.storeFavoritesForSync(updatedRestaurant)
+					.then(() => {
+						DBHelper.modifyFavorites(updatedRestaurant)
+							.then(modifiedRestaurant => {
+								console.log(restaurant);
+								RenderHelper.updateFavoriteIcon(modifiedRestaurant);
+							});
+					})
 			}
 		);
 		if (isFavorite) {
@@ -32,7 +37,6 @@ class RenderHelper {
 		if (oldIcon) {
 			oldIcon.parentNode.replaceChild(newIcon, oldIcon);
 		}
-		console.log(oldIcon)
 	}
 
 	static formatDate(dateObject) {
