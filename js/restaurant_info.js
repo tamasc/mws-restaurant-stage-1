@@ -36,7 +36,7 @@
 		if ('serviceWorker' in navigator) {
 			DBHelper.storeReviewsForSync(review)
 				.then(() => {
-					navigator.serviceWorker.ready.then((swRegistration) => {
+					return navigator.serviceWorker.ready.then((swRegistration) => {
 						return swRegistration.sync.register('reviewSubmission');
 					});
 				})

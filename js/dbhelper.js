@@ -274,9 +274,13 @@ class DBHelper {
 
     static storeFavoritesForSync(restaurant) {
         return DBHelper._store('favoritesSyncStore', restaurant)
-            .catch(error => console.warn(
-                'Error has occured while storing the restaurant for sync in DB', error
-            ));
+            .catch(error => {
+                console.warn(
+                    'Error has occured while storing the restaurant for sync in DB', error
+                );
+                return Promise.reject(error);
+            });
+
     }
 
     /**
