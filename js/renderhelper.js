@@ -29,10 +29,10 @@ class RenderHelper {
 			}
 		);
 		if (isFavorite) {
-			favoriteIcon.setAttribute('aria-label', 'Remove from favorites');
+			favoriteIcon.setAttribute('aria-label', 'The restaurant is saved to favorites. Click to remove from favorites!');
 			favoriteIcon.innerHTML = '&#9733;';
 		} else {
-			favoriteIcon.setAttribute('aria-label', 'Add to favorites');
+			favoriteIcon.setAttribute('aria-label', 'The restaurant is not saved to favorites. Click to add to favorites!');
 			favoriteIcon.innerHTML = '&#9734;';
 		}
 
