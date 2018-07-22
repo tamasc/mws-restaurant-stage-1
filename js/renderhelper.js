@@ -10,13 +10,17 @@ class RenderHelper {
 		favoriteIcon.addEventListener(
 			'click', () => {
 				const updatedRestaurant = Object.assign({}, restaurant, { is_favorite: !isFavorite })
-				if ('serviceWorker' in navigator) {
-					const updateFn = () => DBHelper.modifyFavorites(updatedRestaurant)
-						.then(RenderHelper.updateFavoriteIcon(updatedRestaurant));
+				if ('serviceWorker' in navigator  && 'SyncManager' in window) {
+					const updateFn = () => {
+						return  DBHelper.modifyFavorites(restaurantToUpdate)
+						.then(RenderHelper.updateFavoriteIcon(restaurantToUpdate))
+					};
 					DBHelper.storeFavoritesForSync(updatedRestaurant)
-						.then(() => navigator.serviceWorker.ready.then((swRegistration) => {
-							return swRegistration.sync.register('modifyFavorites');
-						}))
+						.then(() => {
+							return navigator.serviceWorker.ready.then((swRegistration) => {
+								return swRegistration.sync.register('modifyFavorites');
+							});
+						})
 						.catch(updateFn);
 				} else {
 					DBHelper.modifyFavorites(updatedRestaurant)

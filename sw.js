@@ -5,6 +5,7 @@ const CACHE = 'mws-restaurant-v1';
 const STATIC_ASSETS = [
   '/',
   '/css/styles.css',
+  'js.index.js',
   '/js/dbhelper.js',
   '/js/renderhelper.js',
   '/js/main.js',
@@ -63,32 +64,49 @@ self.addEventListener('fetch', event => {
       return !!response
         ? response
         : fetch(event.request)
-            .then(resp => {
-              caches.open(CACHE)
-                .then(cache => cache.put(event.request.url, resp.clone()))
-                .catch(error => `Failed to save request`);
-              return resp;
-            })
-            .catch(err => console.warn('Fetching has fas failed: ', err));
+          .then(resp => {
+            caches.open(CACHE)
+              .then(cache => cache.put(event.request.url, resp.clone()))
+              .catch(error => `Failed to save request`);
+            return resp;
+          })
+          .catch(err => console.warn('Fetching has fas failed: ', err));
     })
   );
 });
 
-self.addEventListener('sync', function(event) {
+self.addEventListener('sync', event => {
+  console.log('sync event received:', event.tag);
   if (event.tag == 'reviewSubmission') {
     event.waitUntil(DBHelper.getReviewsForSync()
       .then(reviews => {
         return Promise.all(
           reviews.map(review => {
-            DBHelper.postReview(review)
-            .then(e => DBHelper.deleteReviewAfterSync(review.id))
+            return DBHelper.postReview(review)
+              .then(e => DBHelper.deleteAfterSync('reviewSyncStore', review.id))
           }))
           .then(e => {
-            self.clients.matchAll().then((clients) => {
-              console.log(clients)
-              clients.forEach(client => client.postMessage({ type: 'reviewsPosted'}));
+            self.clients.matchAll({ includeUncontrolled: true }).then((clients) => {
+              clients.forEach(client => client.postMessage({ type: 'reviewsPosted' }));
             });
           })
-    }));
+      }));
   }
-});
+  if (event.tag == 'modifyFavorites') {
+    event.waitUntil(DBHelper.getFavoritesForSync()
+      .then(restaurants => {
+        return Promise.all(
+          restaurants.map(restaurant => {
+            return DBHelper.modifyFavorites(restaurant)
+              .then(e => {
+                self.clients.matchAll({ includeUncontrolled: true }).then(clients => {
+                  clients.forEach(client => client.postMessage({ type: 'favoritesModified', restaurant }))
+                })
+              })
+              .then(e => DBHelper.deleteAfterSync('favoritesSyncStore', restaurant.id))
+          })
+        );
+      })
+    )
+  }
+})

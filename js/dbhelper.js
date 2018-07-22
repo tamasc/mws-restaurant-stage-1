@@ -280,7 +280,15 @@ class DBHelper {
                 );
                 return Promise.reject(error);
             });
+    }
 
+    static getFavoritesForSync() {
+        return DBHelper.restaurantDBPromise.then(db => {
+            const tx = db.transaction('favoritesSyncStore');
+            const store = tx.objectStore('favoritesSyncStore');
+
+            return store.getAll();
+        });
     }
 
     /**
@@ -323,11 +331,11 @@ class DBHelper {
         })
             .then(response => response.json())
             .then(review => {
-                console.log(review)
                 return review;
             })
             .catch(error => {
                 console.warn(`Request failed. Returned status of ${error}`, null);
+                return Promise.reject(error);
             });
     }
 
@@ -336,9 +344,10 @@ class DBHelper {
      */
     static storeReviews(reviews) {
         return DBHelper._store('reviewStore', reviews)
-            .catch(error => console.warn(
-                'Error has occured while storing the reviews in DB', error
-            ));
+            .catch(error => {
+                console.warn('Error has occured while storing the reviews in DB', error);
+                return Promise.reject(error);
+            });
     }
 
     /**
@@ -352,7 +361,7 @@ class DBHelper {
 
             return idIndex.getAll(id);
         }).catch(error => {
-            console.warn('Error has occured while retrieving data from DB:', error);
+            console.warn('Error has occured while retrieving reviews from DB:', error);
             return Promise.reject(error);
         });
     }
@@ -375,9 +384,10 @@ class DBHelper {
 
     static storeReviewsForSync(review) {
         return DBHelper._store('reviewSyncStore', review)
-            .catch(error => console.warn(
-                'Error has occured while storing the reviews for sync in DB', error
-            ));
+            .catch(error => {
+                console.warn('Error has occured while storing the reviews for sync in DB:', error);
+                return Promise.reject(error);
+            });
     }
 
     static getReviewsForSync() {
@@ -389,8 +399,8 @@ class DBHelper {
         });
     }
 
-    static deleteReviewAfterSync(id) {
-        return DBHelper.getStore('reviewSyncStore', 'readwrite')
+    static deleteAfterSync(storeName, id) {
+        return DBHelper.getStore(storeName, 'readwrite')
         .then(store => store.delete(id));
     }
 
