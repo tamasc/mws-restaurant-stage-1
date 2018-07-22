@@ -435,6 +435,31 @@ section {
   }
 }
 
+
+/* ===================== Status notification ===================== */
+
+#statusNotification {
+  $notificationHeight: 40px;
+  color: white;
+  position: fixed;
+  z-index: 5;
+  bottom: -$notificationHeight;
+  left: 0;
+  right: 0;
+  background-color: #4aae37;
+  text-align: center;
+  line-height: 2.5;
+  overflow: hidden;
+  height: $notificationHeight;
+  font-size: 18px;
+  transition: bottom 0.5s 10s,  background-color 0.1s;
+  &.offline {
+      bottom: 0;
+      transition: bottom 0.1s,  background-color 0.1s;
+      background-color: #e13a00;
+  }
+}
+
 /* ===================== Common styles ===================== */
 
 // favorite icon
@@ -449,7 +474,6 @@ span.favorite-icon {
     color: #FFA42E;
   }
 }
-
 
 // buttons
 
