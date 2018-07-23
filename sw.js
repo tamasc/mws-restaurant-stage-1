@@ -5,7 +5,7 @@ const CACHE = 'mws-restaurant-v1';
 const STATIC_ASSETS = [
   '/',
   '/css/styles.css',
-  'js.index.js',
+  '/js/index.js',
   '/js/dbhelper.js',
   '/js/renderhelper.js',
   '/js/main.js',
