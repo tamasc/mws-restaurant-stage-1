@@ -7,7 +7,7 @@ if ('serviceWorker' in navigator) {
 
     navigator.serviceWorker.addEventListener('message', event => {
         if (event.data.type === 'reviewsPosted') {
-            fetchReviewsFromURL();
+            self.fetchReviewsFromURL();
         }
         if (event.data.type === 'favoritesModified') {
             RenderHelper.updateFavoriteIcon(event.data.restaurant);
@@ -15,14 +15,22 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-window.addEventListener('offline', e => {
+if (!navigator.onLine) {
+    offLineEventCb();
+}
+
+window.addEventListener('offline', offLineEventCb);
+window.addEventListener('online', onLineEventCb);
+
+function offLineEventCb() {
     const notification = document.getElementById('statusNotification');
     notification.innerText = 'The application is offline!';
     notification.setAttribute('ariaHidden', false);
 
     notification.classList.add('offline');
-});
-window.addEventListener('online', e => {
+}
+
+function onLineEventCb() {
     const notification = document.getElementById('statusNotification');
     notification.innerText = 'The application is online!';
     setTimeout(() => {
@@ -30,4 +38,4 @@ window.addEventListener('online', e => {
     }, 10*1000);
 
     notification.classList.remove('offline');
-});
+}
