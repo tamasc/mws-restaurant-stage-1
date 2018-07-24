@@ -75,11 +75,21 @@ self.addEventListener('fetch', event => {
   );
 });
 
+
 self.addEventListener('sync', event => {
   console.log('sync event received:', event.tag);
   if (event.tag == 'reviewSubmission') {
-    event.waitUntil(DBHelper.getReviewsForSync()
+    event.waitUntil(syncReviews());
+  }
+  if (event.tag == 'modifyFavorites') {
+    event.waitUntil(syncFavs())
+  }
+})
+
+function syncReviews() {
+  return DBHelper.getReviewsForSync()
       .then(reviews => {
+        reviewSyncInProgress = true;
         return Promise.all(
           reviews.map(review => {
             return DBHelper.postReview(review)
@@ -89,24 +99,25 @@ self.addEventListener('sync', event => {
             self.clients.matchAll({ includeUncontrolled: true }).then((clients) => {
               clients.forEach(client => client.postMessage({ type: 'reviewsPosted' }));
             });
-          })
-      }));
-  }
-  if (event.tag == 'modifyFavorites') {
-    event.waitUntil(DBHelper.getFavoritesForSync()
-      .then(restaurants => {
-        return Promise.all(
-          restaurants.map(restaurant => {
-            return DBHelper.modifyFavorites(restaurant)
-              .then(e => {
-                self.clients.matchAll({ includeUncontrolled: true }).then(clients => {
-                  clients.forEach(client => client.postMessage({ type: 'favoritesModified', restaurant }))
-                })
-              })
-              .then(e => DBHelper.deleteAfterSync('favoritesSyncStore', restaurant.id))
-          })
-        );
+          });
       })
-    )
-  }
-})
+      .then(e => console.log('sync reviews'))
+}
+
+function syncFavs() {
+  return DBHelper.getFavoritesForSync()
+    .then(restaurants => {
+      return Promise.all(
+        restaurants.map(restaurant => {
+          return DBHelper.modifyFavorites(restaurant)
+            .then(e => {
+              self.clients.matchAll({ includeUncontrolled: true }).then(clients => {
+                clients.forEach(client => client.postMessage({ type: 'favoritesModified', restaurant }))
+              })
+            })
+            .then(e => DBHelper.deleteAfterSync('favoritesSyncStore', restaurant.id))
+        })
+      );
+    })
+    .then(e => console.log('sync favs'))
+}
