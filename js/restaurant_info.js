@@ -101,6 +101,9 @@
 		}
 	}
 
+	// we need it globally to use in index.js
+	self.fetchReviewsFromURL = fetchReviewsFromURL;
+
 	/**
 	 * Create restaurant HTML and add it to the webpage
 	 */
@@ -153,19 +156,23 @@
 	 * Create all reviews HTML and add them to the webpage.
 	 */
 	const fillReviewsHTML = (reviews) => {
-		const container = document.getElementById('reviews-container');
-
+		// const container = document.getElementById('reviews-container');
+		const container = document.getElementById('reviews-list');
+		while (container.firstChild) {
+			container.removeChild(container.firstChild);
+		}
 		if (!reviews && reviews.length < 1) {
 			const noReviews = document.createElement('p');
 			noReviews.innerHTML = 'No reviews yet!';
 			container.appendChild(noReviews);
 			return;
 		}
-		const ul = document.getElementById('reviews-list');
-		reviews.forEach(review => {
-			ul.appendChild(createReviewHTML(review));
+		// const ul = document.getElementById('reviews-list');
+		const sortedReviews = reviews.sort((a, b) => (new Date(b.createdAt)).getTime() - (new Date(a.createdAt)).getTime());
+		sortedReviews.forEach(review => {
+			container.appendChild(createReviewHTML(review));
 		});
-		container.appendChild(ul);
+		// container.appendChild(ul);
 	}
 
 	/**
